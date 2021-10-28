@@ -31,7 +31,7 @@ public sealed class TransactionValue : ModelEnum {
         public override fun discriminant(): Int = DISCRIMINANT
 
         public companion object : ScaleReader<Transaction>, ScaleWriter<Transaction> {
-            public const val DISCRIMINANT: Int = 0
+            public const val DISCRIMINANT: Int = 1
 
             public override fun read(reader: ScaleCodecReader): Transaction = try {
                 Transaction(
@@ -58,7 +58,7 @@ public sealed class TransactionValue : ModelEnum {
         public override fun discriminant(): Int = DISCRIMINANT
 
         public companion object : ScaleReader<RejectedTransaction>, ScaleWriter<RejectedTransaction> {
-            public const val DISCRIMINANT: Int = 1
+            public const val DISCRIMINANT: Int = 2
 
             public override fun read(reader: ScaleCodecReader): RejectedTransaction = try {
                 RejectedTransaction(
@@ -81,16 +81,16 @@ public sealed class TransactionValue : ModelEnum {
             val discriminant =
                 reader.readUByte()
         ) {
-            0 -> Transaction.read(reader)
-            1 -> RejectedTransaction.read(reader)
+            1 -> Transaction.read(reader)
+            2 -> RejectedTransaction.read(reader)
             else -> throw RuntimeException("Unresolved discriminant of the enum variant: $discriminant")
         }
 
         public override fun write(writer: ScaleCodecWriter, instance: TransactionValue) {
             writer.directWrite(instance.discriminant())
             when (val discriminant = instance.discriminant()) {
-                0 -> Transaction.write(writer, instance as Transaction)
-                1 -> RejectedTransaction.write(writer, instance as RejectedTransaction)
+                1 -> Transaction.write(writer, instance as Transaction)
+                2 -> RejectedTransaction.write(writer, instance as RejectedTransaction)
                 else -> throw RuntimeException("Unresolved discriminant of the enum variant: $discriminant")
             }
         }

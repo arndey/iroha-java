@@ -679,7 +679,7 @@ public sealed class QueryBox : ModelEnum {
         public override fun discriminant(): Int = DISCRIMINANT
 
         public companion object : ScaleReader<FindTransactionByHash>, ScaleWriter<FindTransactionByHash> {
-            public const val DISCRIMINANT: Int = 20
+            public const val DISCRIMINANT: Int = 21
 
             public override fun read(reader: ScaleCodecReader): FindTransactionByHash = try {
                 FindTransactionByHash(
@@ -712,7 +712,7 @@ public sealed class QueryBox : ModelEnum {
         public companion object :
             ScaleReader<FindPermissionTokensByAccountId>,
             ScaleWriter<FindPermissionTokensByAccountId> {
-            public const val DISCRIMINANT: Int = 21
+            public const val DISCRIMINANT: Int = 22
 
             public override fun read(reader: ScaleCodecReader): FindPermissionTokensByAccountId = try {
                 FindPermissionTokensByAccountId(
@@ -759,8 +759,8 @@ public sealed class QueryBox : ModelEnum {
             17 -> FindDomainByName.read(reader)
             18 -> FindAllPeers.read(reader)
             19 -> FindTransactionsByAccountId.read(reader)
-            20 -> FindTransactionByHash.read(reader)
-            21 -> FindPermissionTokensByAccountId.read(reader)
+            21 -> FindTransactionByHash.read(reader)
+            22 -> FindPermissionTokensByAccountId.read(reader)
             else -> throw RuntimeException("Unresolved discriminant of the enum variant: $discriminant")
         }
 
@@ -795,8 +795,8 @@ public sealed class QueryBox : ModelEnum {
                 17 -> FindDomainByName.write(writer, instance as FindDomainByName)
                 18 -> FindAllPeers.write(writer, instance as FindAllPeers)
                 19 -> FindTransactionsByAccountId.write(writer, instance as FindTransactionsByAccountId)
-                20 -> FindTransactionByHash.write(writer, instance as FindTransactionByHash)
-                21 -> FindPermissionTokensByAccountId.write(
+                21 -> FindTransactionByHash.write(writer, instance as FindTransactionByHash)
+                22 -> FindPermissionTokensByAccountId.write(
                     writer,
                     instance as
                         FindPermissionTokensByAccountId
