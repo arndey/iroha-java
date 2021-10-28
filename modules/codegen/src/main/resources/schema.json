@@ -191,7 +191,7 @@
         },
         {
           "name": "WorldId",
-          "discriminant": 5,
+          "discriminant": 6,
           "ty": null
         }
       ]
@@ -1688,12 +1688,12 @@
         },
         {
           "name": "FindTransactionByHash",
-          "discriminant": 20,
+          "discriminant": 21,
           "ty": "iroha_data_model::query::transaction::FindTransactionByHash"
         },
         {
           "name": "FindPermissionTokensByAccountId",
-          "discriminant": 21,
+          "discriminant": 22,
           "ty": "iroha_data_model::query::permissions::FindPermissionTokensByAccountId"
         }
       ]
@@ -2030,12 +2030,12 @@
       "variants": [
         {
           "name": "Transaction",
-          "discriminant": 0,
+          "discriminant": 1,
           "ty": "iroha_data_model::transaction::VersionedTransaction"
         },
         {
           "name": "RejectedTransaction",
-          "discriminant": 1,
+          "discriminant": 2,
           "ty": "iroha_data_model::transaction::VersionedRejectedTransaction"
         }
       ]
