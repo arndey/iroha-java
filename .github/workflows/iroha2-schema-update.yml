@@ -22,11 +22,21 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           branch: feature/auto-update-schema
+      - name: Download schema artifact
+        uses: dawidd6/action-download-artifact@v2
+        with:
+          github_token: ${{secrets.GITHUB_TOKEN}}
+          workflow: iroha2-dev-send-schema-to-client.yml
+          workflow_conclusion: success
+          branch: iroha2-dev-schema-to-client
+          name: schema
+          path: target/schema
+          repo: arndey/iroha
       - name: Get schema file
         env:
           AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          curl -H "Authorization: token ${AUTH_TOKEN}" https://raw.githubusercontent.com/arndey/sourcerep/main/src/asd/qwe/example/schema.json > $SCHEMA_FILE_PATH
+          curl -H "Authorization: token ${AUTH_TOKEN}" target/schema/schema.json > $SCHEMA_FILE_PATH
       - name: Generate models by new schema with Gradle
         run: ./gradlew generate
       - name: Update JSON schema
