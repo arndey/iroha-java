@@ -1,10 +1,7 @@
 name: Iroha2 JSON schema updating workflow
-#on:
-#  repository_dispatch:
-#    types: [update-schema]
 on:
-  push:
-    branches: [feature/iroha-171/schema-update-workflow]
+  repository_dispatch:
+    types: [update-schema]
 jobs:
   update-schema:
     runs-on: ubuntu-latest
