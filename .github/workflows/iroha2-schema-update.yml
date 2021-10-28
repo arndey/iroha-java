@@ -27,11 +27,20 @@ jobs:
           AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           curl -H "Authorization: token ${AUTH_TOKEN}" https://raw.githubusercontent.com/arndey/sourcerep/main/src/asd/qwe/example/schema.json > $SCHEMA_FILE_PATH
+      - name: Generate models by new schema with Gradle
+        run: ./gradlew generate
       - name: Update JSON schema
         uses: test-room-7/action-update-file@v1
         with:
           file-path: ${{ env.SCHEMA_FILE_PATH }}
-          commit-msg: (automatic commit by workflow action) JSON schema updated
+          commit-msg: (automatic commit) JSON schema updated
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          branch: feature/auto-update-schema
+      - name: Update generated models
+        uses: test-room-7/action-update-file@v1
+        with:
+          file-path: modules/model/src/main/kotlin/jp/co/soramitsu/iroha2/generated/**/*.kt
+          commit-msg: (automatic commit) generated models updated
           github-token: ${{ secrets.GITHUB_TOKEN }}
           branch: feature/auto-update-schema
       - name: Create PR
