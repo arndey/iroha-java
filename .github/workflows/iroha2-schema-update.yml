@@ -1,0 +1,48 @@
+name: Iroha2 JSON schema updating workflow
+on:
+  repository_dispatch:
+    types: [update-schema]
+jobs:
+  update-schema:
+    runs-on: ubuntu-latest
+    env:
+      SCHEMA_FILE_PATH: modules/codegen/src/main/resources/schema.json
+    steps:
+      - uses: actions/checkout@v2
+      - name: Calculate current schema file hash
+        run: echo "::set-output name=SCHEMA_FILE_HASH::$(sha256sum $SCHEMA_FILE_PATH | awk '{print $1}')"
+        id: current-schema-hash
+      - name: Abort if schema wasn't updated
+        if: ${{ github.event.client_payload.schemaHash == steps.current-schema-hash.outputs.SCHEMA_FILE_HASH }}
+        run: exit 0
+      - uses: peterjgrainger/action-create-branch@v2.0.1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          branch: feature/auto-update-schema
+      - name: Get schema file
+        env:
+          AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          curl -H "Authorization: token ${AUTH_TOKEN}" https://raw.githubusercontent.com/arndey/sourcerep/main/src/asd/qwe/example/schema.json > $SCHEMA_FILE_PATH
+      - name: Update JSON schema
+        uses: test-room-7/action-update-file@v1
+        with:
+          file-path: ${{ env.SCHEMA_FILE_PATH }}
+          commit-msg: (automatic commit by workflow action) JSON schema updated
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          branch: feature/auto-update-schema
+      - name: Create PR
+        uses: peter-evans/create-pull-request@v3.10.0
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          title: (automatic) JSON schema update
+          body: >
+            This PR is auto-generated.
+            New schema file hash ${{ github.event.client_payload.schemaHash }}
+          labels: automated pr
+          branch: feature/auto-update-schema
+          signoff: true
+          delete-branch: true
+          base: iroha2-dev
+          reviewers: arndey
