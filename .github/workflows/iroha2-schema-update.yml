@@ -1,7 +1,10 @@
 name: Iroha2 JSON schema updating workflow
+#on:
+#  repository_dispatch:
+#    types: [update-schema]
 on:
-  repository_dispatch:
-    types: [update-schema]
+  push:
+    branches: [feature/iroha-171/schema-update-workflow]
 jobs:
   update-schema:
     runs-on: ubuntu-latest
@@ -30,13 +33,13 @@ jobs:
           workflow_conclusion: success
           branch: iroha2-dev-schema-to-client
           name: schema
-          path: target/schema
+          path: modules/codegen/src/main/resources
           repo: arndey/iroha
-      - name: Update schema file
-        env:
-          AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          cat target/schema/schema.json > $SCHEMA_FILE_PATH
+#      - name: Update schema file
+#        env:
+#          AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#        run: |
+#          cat target/schema/schema.json > $SCHEMA_FILE_PATH
       - name: Generate models by new schema with Gradle
         run: ./gradlew generate
       - name: Update JSON schema
