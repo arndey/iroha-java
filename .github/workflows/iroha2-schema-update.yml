@@ -9,6 +9,8 @@ jobs:
       SCHEMA_FILE_PATH: modules/codegen/src/main/resources/schema.json
     steps:
       - uses: actions/checkout@v2
+        with:
+          ref: iroha2-dev
       - name: Calculate current schema file hash
         run: echo "::set-output name=SCHEMA_FILE_HASH::$(sha256sum $SCHEMA_FILE_PATH | awk '{print $1}')"
         id: current-schema-hash
