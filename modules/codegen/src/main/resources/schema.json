@@ -2091,14 +2091,5 @@
   },
   "u8": {
     "Int": "FixedWidth"
-  },
-  "u2048": {
-    "Int": "FixedWidth"
-  },
-  "u4096": {
-    "Int": "FixedWidth"
-  },
-  "u8192": {
-    "Int": "FixedWidth"
   }
 }
