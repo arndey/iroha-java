@@ -4,11 +4,13 @@ import jp.co.soramitsu.iroha2.engine.DefaultGenesis;
 import jp.co.soramitsu.iroha2.engine.IrohaRunnerExtension;
 import jp.co.soramitsu.iroha2.engine.WithIroha;
 import jp.co.soramitsu.iroha2.generated.datamodel.Name;
+import jp.co.soramitsu.iroha2.generated.datamodel.Value;
 import jp.co.soramitsu.iroha2.generated.datamodel.account.Account;
 import jp.co.soramitsu.iroha2.generated.datamodel.asset.AssetValue;
 import jp.co.soramitsu.iroha2.generated.datamodel.asset.AssetValueType;
 import jp.co.soramitsu.iroha2.generated.datamodel.domain.Domain;
 import jp.co.soramitsu.iroha2.generated.datamodel.domain.Id;
+import jp.co.soramitsu.iroha2.generated.datamodel.metadata.Metadata;
 import jp.co.soramitsu.iroha2.generated.datamodel.transaction.VersionedTransaction;
 import jp.co.soramitsu.iroha2.query.QueryAndExtractor;
 import jp.co.soramitsu.iroha2.query.QueryBuilder;
@@ -20,7 +22,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -88,6 +92,31 @@ public class JavaTest {
         final CompletableFuture<Account> future = client.sendQueryAsync(query);
         final Account account = future.get(10, TimeUnit.SECONDS);
         Assertions.assertEquals(account.getId(), accountId);
+    }
+
+    @Test
+    @WithIroha(genesis = DefaultGenesis.class)
+    public void registerAssetDefinitionWithMetadata() throws Exception {
+        final Value assetMetadataValue = new Value.U128(BigInteger.TEN);
+        final Name assetMetadataKey = new Name("asset_metadata_key");
+        final Metadata metadata = new Metadata(new HashMap<Name, Value>() {{
+            put(assetMetadataKey, assetMetadataValue);
+        }});
+
+        final VersionedTransaction registerAssetTx = TransactionBuilder.Companion
+            .builder()
+            .account(ALICE_ACCOUNT_ID)
+            .registerAsset(DEFAULT_ASSET_DEFINITION_ID, new AssetValueType.Quantity(), metadata)
+            .buildSigned(ALICE_KEYPAIR);
+        client.sendTransaction(registerAssetTx).get(10, TimeUnit.SECONDS);
+
+        final QueryAndExtractor<Value> query = QueryBuilder
+            .findAssetDefinitionKeyValueByIdAndKey(DEFAULT_ASSET_DEFINITION_ID, assetMetadataKey)
+            .account(ALICE_ACCOUNT_ID)
+            .buildSigned(ALICE_KEYPAIR);
+        final CompletableFuture<Value> future = client.sendQueryAsync(query);
+        final Value value = future.get(10, TimeUnit.SECONDS);
+        Assertions.assertEquals(value, assetMetadataValue);
     }
 
     @Test
