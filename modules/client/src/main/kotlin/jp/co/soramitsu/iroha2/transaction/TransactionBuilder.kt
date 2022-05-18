@@ -201,8 +201,10 @@ class TransactionBuilder(builder: TransactionBuilder.() -> Unit = {}) {
 
     fun registerAsset(
         id: DefinitionId,
-        assetValueType: AssetValueType
-    ) = this.apply { instructions.value.add(Instructions.registerAsset(id, assetValueType)) }
+        assetValueType: AssetValueType,
+        metadata: Metadata = Metadata(mapOf()),
+        mintable: Boolean = true
+    ) = this.apply { instructions.value.add(Instructions.registerAsset(id, assetValueType, metadata, mintable)) }
 
     fun setKeyValue(
         assetId: AssetId,
