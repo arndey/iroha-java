@@ -91,8 +91,8 @@ open class Iroha2Client(
 
     open val logger: Logger = LoggerFactory.getLogger(javaClass)
 
-    open val client by lazy {
-        HttpClient(CIO) {
+    open val client: HttpClient
+        get() = HttpClient(CIO) {
             expectSuccess = true
             if (log) {
                 install(Logging)
@@ -122,7 +122,6 @@ open class Iroha2Client(
                 }
             }
         }
-    }
 
     override fun close() = client.close()
 
@@ -253,11 +252,13 @@ open class Iroha2Client(
                             logger.debug("Transaction {} committed", hexHash)
                             return hash
                         }
+
                         is Status.Rejected -> {
                             val reason = status.rejectionReason.message()
                             logger.error("Transaction {} was rejected by reason: `{}`", hexHash, reason)
                             throw TransactionRejectedException("Transaction rejected with reason '$reason'")
                         }
+
                         is Status.Validating -> {
                             logger.debug("Transaction {} is validating", hexHash)
                         }
@@ -265,6 +266,7 @@ open class Iroha2Client(
                 }
                 return null
             }
+
             else -> throw WebSocketProtocolException(
                 "Expected message with type ${Event.Pipeline::class.qualifiedName}, " +
                     "but was ${event::class.qualifiedName}"
@@ -290,16 +292,20 @@ open class Iroha2Client(
             is RejectionReason.Block -> when (this.blockRejectionReason) {
                 is BlockRejectionReason.ConsensusBlockRejection -> "Block was rejected during consensus"
             }
+
             is RejectionReason.Transaction -> when (val reason = this.transactionRejectionReason) {
                 is TransactionRejectionReason.InstructionExecution -> {
                     val details = reason.instructionExecutionFail
                     "Failed: `${details.reason}` during execution of instruction: ${details.instruction::class.qualifiedName}"
                 }
+
                 is TransactionRejectionReason.NotPermitted -> reason.notPermittedFail.reason
                 is TransactionRejectionReason.UnexpectedGenesisAccountSignature ->
                     "Genesis account can sign only transactions in the genesis block"
+
                 is TransactionRejectionReason.UnsatisfiedSignatureCondition ->
                     reason.unsatisfiedSignatureConditionFail.reason
+
                 is TransactionRejectionReason.WasmExecution -> reason.wasmExecutionFail.reason
                 is TransactionRejectionReason.LimitCheck -> reason.transactionLimitError.string
             }
@@ -320,11 +326,13 @@ open class Iroha2Client(
                                 "Expected `${T::class.qualifiedName}`, but was ${actualMessage::class.qualifiedName}"
                             )
                     }
+
                     else -> throw WebSocketProtocolException(
                         "Expected `${VersionedEventSubscriberMessage.V1::class.qualifiedName}`, but was `${versionedMessage::class.qualifiedName}`"
                     )
                 }
             }
+
             else -> throw WebSocketProtocolException(
                 "Expected server will `${Frame.Binary::class.qualifiedName}` frame, but was `${frame::class.qualifiedName}`"
             )
