@@ -13,6 +13,7 @@ import jp.co.soramitsu.iroha2.generated.AssetDefinitionId
 import jp.co.soramitsu.iroha2.generated.AssetId
 import jp.co.soramitsu.iroha2.generated.AssetValueType
 import jp.co.soramitsu.iroha2.generated.DomainId
+import jp.co.soramitsu.iroha2.generated.Duration
 import jp.co.soramitsu.iroha2.generated.InstructionBox
 import jp.co.soramitsu.iroha2.generated.Metadata
 import jp.co.soramitsu.iroha2.generated.PermissionToken
@@ -20,9 +21,13 @@ import jp.co.soramitsu.iroha2.generated.RawGenesisBlock
 import jp.co.soramitsu.iroha2.generated.Repeats
 import jp.co.soramitsu.iroha2.generated.RoleId
 import jp.co.soramitsu.iroha2.generated.TriggerId
+import jp.co.soramitsu.iroha2.generated.TriggeringFilterBox
 import jp.co.soramitsu.iroha2.toIrohaPublicKey
+import jp.co.soramitsu.iroha2.transaction.EventFilters
 import jp.co.soramitsu.iroha2.transaction.Instructions
 import org.testcontainers.shaded.org.apache.commons.lang3.RandomStringUtils
+import java.math.BigInteger
+import java.util.Date
 
 /**
  * Create a default genesis where there is just one domain with only Alice and Bob in it
@@ -128,6 +133,33 @@ open class AliceHas100XorAndPermissionToBurn : Genesis(
             Permissions.CanMintUserAssetDefinitionsToken,
             DEFAULT_ASSET_DEFINITION_ID.asJsonString(),
             ALICE_ACCOUNT_ID,
+        ),
+    ),
+)
+
+open class AliceHas100XorAndPermissionToBurnWithWasmTrigger : Genesis(
+    rawGenesisBlock(
+        Instructions.registerAssetDefinition(DEFAULT_ASSET_DEFINITION_ID, AssetValueType.Quantity()),
+        Instructions.mintAsset(DEFAULT_ASSET_ID, 100),
+        Instructions.grantPermissionToken(
+            Permissions.CanMintUserAssetDefinitionsToken,
+            DEFAULT_ASSET_DEFINITION_ID.asJsonString(),
+            ALICE_ACCOUNT_ID,
+        ),
+        Instructions.registerWasmTrigger(
+            TriggerId("wasm_trigger".asName()),
+            this.javaClass.classLoader
+                .getResource("create_nft_for_alice_smartcontract.wasm")
+                .readBytes(),
+            Repeats.Indefinitely(),
+            ALICE_ACCOUNT_ID,
+            Metadata(mapOf()),
+            TriggeringFilterBox.Time(
+                EventFilters.timeEventFilter(
+                    Duration(BigInteger.valueOf(Date().time / 1000), 0),
+                    Duration(BigInteger.valueOf(1L), 0),
+                ),
+            ),
         ),
     ),
 )

@@ -18,12 +18,12 @@ import jp.co.soramitsu.iroha2.generated.Metadata
 import jp.co.soramitsu.iroha2.generated.Name
 import jp.co.soramitsu.iroha2.generated.Repeats
 import jp.co.soramitsu.iroha2.generated.TriggerId
-import jp.co.soramitsu.iroha2.generated.TriggeringFilterBox
 import jp.co.soramitsu.iroha2.query.QueryBuilder
 import jp.co.soramitsu.iroha2.testengine.ALICE_ACCOUNT_ID
 import jp.co.soramitsu.iroha2.testengine.ALICE_ACCOUNT_NAME
 import jp.co.soramitsu.iroha2.testengine.ALICE_KEYPAIR
 import jp.co.soramitsu.iroha2.testengine.AliceHas100XorAndPermissionToBurn
+import jp.co.soramitsu.iroha2.testengine.AliceHas100XorAndPermissionToBurnWithWasmTrigger
 import jp.co.soramitsu.iroha2.testengine.BOB_ACCOUNT_ID
 import jp.co.soramitsu.iroha2.testengine.DEFAULT_ASSET_ID
 import jp.co.soramitsu.iroha2.testengine.DEFAULT_DOMAIN_ID
@@ -221,37 +221,37 @@ class TriggersTest : IrohaTest<Iroha2Client>() {
     }
 
     @Test
-    @WithIroha([AliceHas100XorAndPermissionToBurn::class])
+    @WithIroha([AliceHas100XorAndPermissionToBurnWithWasmTrigger::class])
     @Story("Wasm trigger mints NFT for every user")
     @SdkTestId("wasm_trigger_to_mint_nft_for_every_user")
     fun `wasm trigger to mint nft for every user`(): Unit = runBlocking {
-        val triggerId = TriggerId("wasm_trigger".asName())
-
         val currentTime = Date().time / 1000
-        val filter = TriggeringFilterBox.Time(
-            EventFilters.timeEventFilter(
-                Duration(BigInteger.valueOf(currentTime), 0),
-                Duration(BigInteger.valueOf(1L), 0),
-            ),
-        )
-        val wasm = this.javaClass.classLoader
-            .getResource("create_nft_for_alice_smartcontract.wasm")
-            .readBytes()
 
-        client.sendTransaction {
-            accountId = ALICE_ACCOUNT_ID
-            registerWasmTrigger(
-                triggerId,
-                wasm,
-                Repeats.Indefinitely(),
-                ALICE_ACCOUNT_ID,
-                Metadata(mapOf()),
-                filter,
-            )
-            buildSigned(ALICE_KEYPAIR)
-        }.also { d ->
-            withTimeout(txTimeout) { d.await() }
-        }
+//        val triggerId = TriggerId("wasm_trigger".asName())
+//        val filter = TriggeringFilterBox.Time(
+//            EventFilters.timeEventFilter(
+//                Duration(BigInteger.valueOf(currentTime), 0),
+//                Duration(BigInteger.valueOf(1L), 0),
+//            ),
+//        )
+//        val wasm = this.javaClass.classLoader
+//            .getResource("create_nft_for_alice_smartcontract.wasm")
+//            .readBytes()
+//
+//        client.sendTransaction {
+//            accountId = ALICE_ACCOUNT_ID
+//            registerWasmTrigger(
+//                triggerId,
+//                wasm,
+//                Repeats.Indefinitely(),
+//                ALICE_ACCOUNT_ID,
+//                Metadata(mapOf()),
+//                filter,
+//            )
+//            buildSigned(ALICE_KEYPAIR)
+//        }.also { d ->
+//            withTimeout(txTimeout) { d.await() }
+//        }
 
         // send some transactions to keep Iroha2 network busy
         repeat(2) { i ->

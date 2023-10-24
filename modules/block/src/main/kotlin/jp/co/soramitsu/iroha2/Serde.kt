@@ -63,6 +63,7 @@ import jp.co.soramitsu.iroha2.generated.SetKeyValueBox
 import jp.co.soramitsu.iroha2.generated.SignatureCheckCondition
 import jp.co.soramitsu.iroha2.generated.SocketAddr
 import jp.co.soramitsu.iroha2.generated.StringWithJson
+import jp.co.soramitsu.iroha2.generated.TimeEventFilter
 import jp.co.soramitsu.iroha2.generated.TransactionLimits
 import jp.co.soramitsu.iroha2.generated.TransactionQueryOutput
 import jp.co.soramitsu.iroha2.generated.TransactionValue
@@ -71,7 +72,9 @@ import jp.co.soramitsu.iroha2.generated.TriggerId
 import jp.co.soramitsu.iroha2.generated.ValidatorMode
 import jp.co.soramitsu.iroha2.generated.Value
 import jp.co.soramitsu.iroha2.generated.VersionedCommittedBlock
+import jp.co.soramitsu.iroha2.generated.WasmSmartContract
 import java.io.ByteArrayOutputStream
+import java.util.Base64
 import kotlin.reflect.KClass
 import kotlin.reflect.full.createInstance
 import kotlin.reflect.full.memberProperties
@@ -137,6 +140,8 @@ val JSON_SERDE by lazy {
         module.addSerializer(SequenceBox::class.java, SequenceBoxSerializer)
         module.addSerializer(NewParameterBox::class.java, NewParameterBoxSerializer)
         module.addSerializer(StringWithJson::class.java, StringWithJsonSerializer)
+        module.addSerializer(WasmSmartContract::class.java, WasmSmartContractSerializer)
+        module.addSerializer(TimeEventFilter::class.java, TimeEventFilterSerializer)
 
         mapper.registerModule(module)
         mapper.registerModule(
@@ -841,6 +846,18 @@ object StringWithJsonSerializer : JsonSerializer<StringWithJson>() {
         gen.writeStartObject()
         gen.writeObjectField(node.key, node.value.asText())
         gen.writeEndObject()
+    }
+}
+
+object WasmSmartContractSerializer : JsonSerializer<WasmSmartContract>() {
+    override fun serialize(value: WasmSmartContract, gen: JsonGenerator, serializers: SerializerProvider) {
+        gen.writeString(Base64.getEncoder().encodeToString(value.vecOfU8))
+    }
+}
+
+object TimeEventFilterSerializer : JsonSerializer<TimeEventFilter>() {
+    override fun serialize(value: TimeEventFilter, gen: JsonGenerator, serializers: SerializerProvider) {
+        gen.writeObject(value.executionTime)
     }
 }
 
