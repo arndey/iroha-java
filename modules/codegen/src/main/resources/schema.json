@@ -2228,7 +2228,39 @@
   "IpfsPath": "String",
   "Ipv4Addr": "Array<u8, 4>",
   "Ipv6Addr": "Array<u16, 8>",
-  "JsonString": "String",
+  "JsonString": {
+    "Enum": [
+      {
+        "tag": "Null",
+        "discriminant": 0
+      },
+      {
+        "tag": "String",
+        "discriminant": 1,
+        "type": "String"
+      },
+      {
+        "tag": "Bool",
+        "discriminant": 2,
+        "type": "bool"
+      },
+      {
+        "tag": "Array",
+        "discriminant": 3,
+        "type": "Vec<JsonString>"
+      },
+      {
+        "tag": "Number",
+        "discriminant": 4,
+        "type": "String"
+      },
+      {
+        "tag": "Object",
+        "discriminant": 5,
+        "type": "SortedMap<String, JsonString>"
+      }
+    ]
+  },
   "Level": {
     "Enum": [
       {
@@ -2760,7 +2792,7 @@
       },
       {
         "name": "payload",
-        "type": "Option<JsonString>"
+        "type": "JsonString"
       }
     ]
   },
@@ -3832,6 +3864,12 @@
       "value": "JsonString"
     }
   },
+  "SortedMap<String, JsonString>": {
+    "Map": {
+      "key": "String",
+      "value": "JsonString"
+    }
+  },
   "SortedVec<Permission>": {
     "Vec": "Permission"
   },
@@ -4495,6 +4533,9 @@
   "Vec<InstructionBox>": {
     "Vec": "InstructionBox"
   },
+  "Vec<JsonString>": {
+    "Vec": "JsonString"
+  },
   "Vec<Parameter>": {
     "Vec": "Parameter"
   },
@@ -4516,6 +4557,7 @@
     ]
   },
   "WasmSmartContract": "Vec<u8>",
+  "bool": "bool",
   "u128": {
     "Int": "FixedWidth"
   },

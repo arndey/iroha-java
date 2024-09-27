@@ -526,7 +526,7 @@ object NumericDeserializer : JsonDeserializer<Numeric>() {
 object PermissionDeserializer : JsonDeserializer<Permission>() {
     override fun deserialize(p: JsonParser, ctxt: DeserializationContext): Permission {
         val node = p.readValueAsTree<ObjectNode>()
-        return Permission(node.get("name").asText(), node.get("payload").asStringOrNull())
+        return Permission(node.get("name").asText(), node.get("payload").asText())
     }
 }
 
