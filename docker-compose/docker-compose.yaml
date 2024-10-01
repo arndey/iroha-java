@@ -1,7 +1,7 @@
 services:
   irohad0:
-    image: erigara/iroha2:rc.22.2-json-scale
-#    platform: linux/amd64
+    image: hyperledger/iroha:2.0.0-pre-rc.22.2
+    platform: linux/amd64
     environment:
       CHAIN: 00000000-0000-0000-0000-000000000000
       PUBLIC_KEY: ed0120A98BAFB0663CE08D75EBD506FEC38A84E576A7C9B0897693ED4B04FD9EF2D18D
@@ -42,8 +42,8 @@ services:
           irohad
       "
   irohad1:
-    image: erigara/iroha2:rc.22.2-json-scale
-#    platform: linux/amd64
+    image: hyperledger/iroha:2.0.0-pre-rc.22.2
+    platform: linux/amd64
     environment:
       CHAIN: 00000000-0000-0000-0000-000000000000
       PUBLIC_KEY: ed01209897952D14BDFAEA780087C38FF3EB800CB20B882748FC95A575ADB9CD2CB21D
@@ -65,8 +65,8 @@ services:
       retries: 30
       start_period: 4s
   irohad2:
-    image: erigara/iroha2:rc.22.2-json-scale
-#    platform: linux/amd64
+    image: hyperledger/iroha:2.0.0-pre-rc.22.2
+    platform: linux/amd64
     environment:
       CHAIN: 00000000-0000-0000-0000-000000000000
       PUBLIC_KEY: ed01204EE2FCD53E1730AF142D1E23951198678295047F9314B4006B0CB61850B1DB10
@@ -88,8 +88,8 @@ services:
       retries: 30
       start_period: 4s
   irohad3:
-    image: erigara/iroha2:rc.22.2-json-scale
-#    platform: linux/amd64
+    image: hyperledger/iroha:2.0.0-pre-rc.22.2
+    platform: linux/amd64
     environment:
       CHAIN: 00000000-0000-0000-0000-000000000000
       PUBLIC_KEY: ed0120CACF3A84B8DC8710CE9D6B968EE95EC7EE4C93C85858F026F3B4417F569592CE
