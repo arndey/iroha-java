@@ -432,7 +432,7 @@ open class BobCanUnregisterAnyRole : Genesis(
             permission = Permissions.CanUnregisterAnyRole,
             destinationId = BOB_ACCOUNT_ID,
         ),
-        transferTo = BOB_ACCOUNT_ID
+        transferTo = BOB_ACCOUNT_ID,
     ),
 )
 
@@ -442,7 +442,7 @@ open class BobCanUnregisterAnyRole : Genesis(
 fun rawGenesisTx(
     vararg isi: InstructionBox,
     params: List<Parameter> = emptyList(),
-    transferTo: AccountId = ALICE_ACCOUNT_ID
+    transferTo: AccountId = ALICE_ACCOUNT_ID,
 ) = RawGenesisTransaction(
     chain = ChainId("00000000-0000-0000-0000-000000000000"),
     executor = Genesis.EXECUTOR_FILE_NAME,

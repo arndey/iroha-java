@@ -748,7 +748,7 @@ class InstructionsTest : IrohaTest<Iroha2Client>() {
     @SdkTestId("set_key_value_in_foreign_asset_after_granting_role")
     fun `register and grant role to account and then revoke it`(): Unit = runBlocking {
         val assetId = AssetId(BOB_ACCOUNT_ID, DEFAULT_ASSET_DEFINITION_ID)
-         client.tx(BOB_ACCOUNT_ID, BOB_KEYPAIR) {
+        client.tx(BOB_ACCOUNT_ID, BOB_KEYPAIR) {
             registerAssetDefinition(DEFAULT_ASSET_DEFINITION_ID, AssetType.Store())
         }
 
