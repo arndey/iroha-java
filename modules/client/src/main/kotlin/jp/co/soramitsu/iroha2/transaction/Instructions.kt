@@ -300,7 +300,7 @@ object Instructions {
      */
     fun grantPermissionToken(
         permission: Permissions,
-        payload: String = "Null",
+        payload: String = "null",
         destinationId: AccountId,
     ) = InstructionBox.Grant(
         GrantBox.Permission(
@@ -340,12 +340,12 @@ object Instructions {
         )
 
     /**
-     * Revoke an account the [Permissions.CanSetKeyValueUserAssetsToken] permission
+     * Revoke an account the [Permissions.CanSetKeyValueInUserAsset] permission
      */
     fun revokeSetKeyValueAsset(assetId: AssetId, target: AccountId): InstructionBox {
         return revokeSome(target) {
             Permission(
-                name = Permissions.CanSetKeyValueUserAssetsToken.type,
+                name = Permissions.CanSetKeyValueInUserAsset.type,
                 payload = assetId.asJsonString(),
             )
         }

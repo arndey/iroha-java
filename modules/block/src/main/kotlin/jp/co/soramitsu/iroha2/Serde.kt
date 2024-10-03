@@ -528,7 +528,7 @@ object PermissionDeserializer : JsonDeserializer<Permission>() {
         val node = p.readValueAsTree<ObjectNode>()
         var payloadValue = node.get("payload").asStringOrNull()
         when (payloadValue.isNullOrEmpty()) {
-            true -> payloadValue = "Null"
+            true -> payloadValue = "null"
             else -> {}
         }
         return Permission(node.get("name").asText(), payloadValue)
@@ -1210,7 +1210,7 @@ object NumericSerializer : JsonSerializer<Numeric>() {
 object PermissionSerializer : JsonSerializer<Permission>() {
     override fun serialize(value: Permission, gen: JsonGenerator, serializers: SerializerProvider) {
         val payload = when (value.payload) {
-            "Null" -> null
+            "null" -> null
             else -> JSON_SERDE.readTree(value.payload)
         }
 

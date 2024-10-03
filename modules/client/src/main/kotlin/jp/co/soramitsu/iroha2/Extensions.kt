@@ -141,8 +141,8 @@ inline fun <reified B> Any.cast(): B {
 
 fun AssetId.asString(withPrefix: Boolean = false) = this.definition.asString() + ASSET_ID_DELIMITER + this.account.asString(withPrefix)
 
-fun AssetId.asJsonString() = "{\"asset\": " +
-    "\"${this.definition.asString() + ASSET_ID_DELIMITER + this.account.asString()}\"}"
+fun AssetId.asJsonString(withPrefix: Boolean = false) = "{\"asset\": " +
+    "\"${this.definition.asString() + ASSET_ID_DELIMITER + this.account.asString(withPrefix)}\"}"
 
 fun AssetDefinitionId.asString() = this.name.string + ASSET_ID_DELIMITER + this.domain.name.string
 

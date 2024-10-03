@@ -41,8 +41,7 @@ open class AliceCanUpgradeExecutor : Genesis(
     rawGenesisTx(
         Instructions.grantPermissionToken(
             Permissions.CanUpgradeExecutor,
-            "Null",
-            ALICE_ACCOUNT_ID,
+            destinationId = ALICE_ACCOUNT_ID,
         ),
     ),
 )
@@ -62,8 +61,7 @@ open class AliceCanUnregisterAnyPeer : Genesis(
     rawGenesisTx(
         Instructions.grantPermissionToken(
             Permissions.CanUnregisterAnyPeer,
-            "Null",
-            ALICE_ACCOUNT_ID,
+            destinationId = ALICE_ACCOUNT_ID,
         ),
     ),
 )
@@ -148,7 +146,7 @@ open class AliceHas100XorAndPermissionToMintAndBurn : Genesis(
         Instructions.registerAssetDefinition(DEFAULT_ASSET_DEFINITION_ID, AssetType.numeric()),
         Instructions.mintAsset(DEFAULT_ASSET_ID, 100),
         Instructions.grantPermissionToken(
-            Permissions.CanMintUserAssetDefinitionsToken,
+            Permissions.CanMintAssetWithDefinition,
             DEFAULT_ASSET_DEFINITION_ID.asJsonString(),
             ALICE_ACCOUNT_ID,
         ),
@@ -209,12 +207,12 @@ open class AliceAndBobEachHave100Xor : Genesis(
     rawGenesisTx(
         Instructions.registerAssetDefinition(DEFAULT_ASSET_DEFINITION_ID, AssetType.numeric()),
         Instructions.grantPermissionToken(
-            Permissions.CanTransferAssetsWithDefinition,
+            Permissions.CanTransferAssetWithDefinition,
             DEFAULT_ASSET_DEFINITION_ID.asJsonString(),
             ALICE_ACCOUNT_ID,
         ),
         Instructions.grantPermissionToken(
-            Permissions.CanTransferAssetsWithDefinition,
+            Permissions.CanTransferAssetWithDefinition,
             DEFAULT_ASSET_DEFINITION_ID.asJsonString(),
             BOB_ACCOUNT_ID,
         ),
@@ -251,7 +249,7 @@ open class StoreAssetWithMetadata : Genesis(
 open class AliceCanMintXor : Genesis(
     rawGenesisTx(
         Instructions.grantPermissionToken(
-            Permissions.CanMintUserAssetDefinitionsToken,
+            Permissions.CanMintAssetWithDefinition,
             XOR_DEFINITION_ID.asJsonString(),
             ALICE_ACCOUNT_ID,
         ),
@@ -369,12 +367,12 @@ open class FatGenesis : Genesis(
         ),
         Instructions.registerAssetDefinition(DEFAULT_ASSET_DEFINITION_ID, AssetType.numeric()),
         Instructions.grantPermissionToken(
-            Permissions.CanTransferAssetsWithDefinition,
+            Permissions.CanTransferAssetWithDefinition,
             DEFAULT_ASSET_DEFINITION_ID.asJsonString(),
             ALICE_ACCOUNT_ID,
         ),
         Instructions.grantPermissionToken(
-            Permissions.CanTransferAssetsWithDefinition,
+            Permissions.CanTransferAssetWithDefinition,
             DEFAULT_ASSET_DEFINITION_ID.asJsonString(),
             BOB_ACCOUNT_ID,
         ),
@@ -434,18 +432,18 @@ open class BobCanUnregisterAnyRole : Genesis(
             permission = Permissions.CanUnregisterAnyRole,
             destinationId = BOB_ACCOUNT_ID,
         ),
-        Instructions.transferDomainOwnership(
-            GENESIS_ACCOUNT,
-            WithDomainTransferredToBob.DOMAIN_ID,
-            BOB_ACCOUNT_ID,
-        ),
+        transferTo = BOB_ACCOUNT_ID
     ),
 )
 
 /**
  * Return [RawGenesisTransaction] with instructions to init genesis
  */
-fun rawGenesisTx(vararg isi: InstructionBox, params: List<Parameter> = emptyList()) = RawGenesisTransaction(
+fun rawGenesisTx(
+    vararg isi: InstructionBox,
+    params: List<Parameter> = emptyList(),
+    transferTo: AccountId = ALICE_ACCOUNT_ID
+) = RawGenesisTransaction(
     chain = ChainId("00000000-0000-0000-0000-000000000000"),
     executor = Genesis.EXECUTOR_FILE_NAME,
     parameters = params,
@@ -453,7 +451,7 @@ fun rawGenesisTx(vararg isi: InstructionBox, params: List<Parameter> = emptyList
         Instructions.registerDomain(DEFAULT_DOMAIN_ID),
         Instructions.registerAccount(ALICE_ACCOUNT_ID, Metadata(emptyMap())),
         Instructions.registerAccount(BOB_ACCOUNT_ID, Metadata(emptyMap())),
-        Instructions.transferDomainOwnership(GENESIS_ACCOUNT, DEFAULT_DOMAIN_ID, ALICE_ACCOUNT_ID),
+        Instructions.transferDomainOwnership(GENESIS_ACCOUNT, DEFAULT_DOMAIN_ID, transferTo),
         *isi,
     ),
     topology = emptyList(),

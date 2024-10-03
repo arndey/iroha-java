@@ -287,7 +287,7 @@ class QueriesTest : IrohaTest<Iroha2Client>() {
             .let { query ->
                 client.sendQuery(query)
             }.also {
-                assert(it == StoreAssetWithMetadata.ASSET_VALUE)
+                assertEquals(it, StoreAssetWithMetadata.ASSET_VALUE)
             }
     }
 
