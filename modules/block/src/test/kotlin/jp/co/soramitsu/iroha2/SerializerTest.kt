@@ -120,14 +120,14 @@ class SerializerTest {
                       "id": "time_trigger",
                       "action": {
                         "executable": {
-                          "Instructions": {
+                          "Instructions": [{
                             "Mint": {
                               "Asset": {
                                 "object": "1",
                                 "destination": "xor#wonderland#ed0120ce7fa46c9dce7ea4b125e2e36bdb63ea33073e7590ac92816ae1e861b7048b03@wonderland"
                               }
                             }
-                          }
+                          }]
                         },
                         "repeats": "Indefinitely",
                         "authority": "ed0120CE7FA46C9DCE7EA4B125E2E36BDB63EA33073E7590AC92816AE1E861B7048B03@wonderland",
@@ -149,6 +149,6 @@ class SerializerTest {
             }
         """.trimIndent()
         val json = JSON_SERDE.writeValueAsString(genesis.transaction).trimIndent()
-        assertEquals(expectedJson.lowercase(), json.asPrettyJson().lowercase())
+        assertEquals(expectedJson.asPrettyJson().lowercase(), json.asPrettyJson().lowercase())
     }
 }

@@ -624,15 +624,7 @@ object ExecutableDeserializer : JsonDeserializer<Executable>() {
         val node = p.readValueAsTree<JsonNode>().fields().next()
 
         val paramClass = node.key.toArg()
-        var value = JSON_SERDE.convertValue(node.value, paramClass)
-        if (value is List<*>) {
-            value = value.cast<List<HashMap<String, HashMap<String, *>>>>().map { map ->
-                map.map { (k, v) ->
-                    val instruction = JSON_SERDE.convertValue(v, getClazzByParam(k).java)
-                    instruction.toInstructionBox()
-                }
-            }
-        }
+        val value = JSON_SERDE.convertValue(node.value, paramClass)
 
         return getExecutable(value)
     }
@@ -1209,11 +1201,7 @@ object NumericSerializer : JsonSerializer<Numeric>() {
  */
 object PermissionSerializer : JsonSerializer<Permission>() {
     override fun serialize(value: Permission, gen: JsonGenerator, serializers: SerializerProvider) {
-        val payload = when (value.payload) {
-            "null" -> null
-            else -> JSON_SERDE.readTree(value.payload)
-        }
-
+        val payload = JSON_SERDE.readTree(value.payload)
         gen.writeStartObject()
         gen.writeObjectField(Permission::name.name, value.name)
         gen.writeObjectField(Permission::payload.name, payload)

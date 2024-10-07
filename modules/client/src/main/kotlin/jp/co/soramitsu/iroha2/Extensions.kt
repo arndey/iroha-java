@@ -139,9 +139,9 @@ inline fun <reified B> Any.cast(): B {
         ?: throw ClassCastException("Could not cast `${this::class.qualifiedName}` to `${B::class.qualifiedName}`")
 }
 
-fun AssetId.asString(withPrefix: Boolean = false) = this.definition.asString() + ASSET_ID_DELIMITER + this.account.asString(withPrefix)
+fun AssetId.asString(withPrefix: Boolean = true) = this.definition.asString() + ASSET_ID_DELIMITER + this.account.asString(withPrefix)
 
-fun AssetId.asJsonString(withPrefix: Boolean = false) = "{\"asset\": " +
+fun AssetId.asJsonString(withPrefix: Boolean = true) = "{\"asset\": " +
     "\"${this.definition.asString() + ASSET_ID_DELIMITER + this.account.asString(withPrefix)}\"}"
 
 fun AssetDefinitionId.asString() = this.name.string + ASSET_ID_DELIMITER + this.domain.name.string
@@ -149,10 +149,10 @@ fun AssetDefinitionId.asString() = this.name.string + ASSET_ID_DELIMITER + this.
 fun AssetDefinitionId.asJsonString() = "{\"asset_definition\": " +
     "\"${this.name.string + ASSET_ID_DELIMITER + this.domain.name.string}\"}"
 
-fun AccountId.asString(withPrefix: Boolean = false) = this.signatory.payload.toHex(withPrefix) +
+fun AccountId.asString(withPrefix: Boolean = true) = this.signatory.payload.toHex(withPrefix) +
     ACCOUNT_ID_DELIMITER + this.domain.name.string
 
-fun AccountId.asJsonString(withPrefix: Boolean = false) = "{\"account\": \"${this.signatory.payload.toHex(withPrefix) + ACCOUNT_ID_DELIMITER + this.domain.name.string}\"}"
+fun AccountId.asJsonString(withPrefix: Boolean = true) = "{\"account\": \"${this.signatory.payload.toHex(withPrefix) + ACCOUNT_ID_DELIMITER + this.domain.name.string}\"}"
 
 fun DomainId.asString() = this.name.string
 
@@ -175,7 +175,7 @@ fun Metadata.merge(extra: Metadata) = Metadata(
 )
 
 fun InstructionBox.Register.extractIdentifiableBox() = runCatching {
-    when (val discriminant = this.registerBox.discriminant()) {
+    when (this.registerBox.discriminant()) {
         0 -> this.registerBox.cast<Peer>() as IdentifiableBox
         1 -> this.registerBox.cast<Domain>() as IdentifiableBox
         2 -> this.registerBox.cast<Account>() as IdentifiableBox
