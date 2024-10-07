@@ -110,7 +110,6 @@ import jp.co.soramitsu.iroha2.generated.Upgrade
 import jp.co.soramitsu.iroha2.generated.WasmSmartContract
 import java.io.ByteArrayOutputStream
 import java.math.BigInteger
-import java.util.HashMap
 import kotlin.reflect.KClass
 import kotlin.reflect.full.memberProperties
 import kotlin.reflect.full.primaryConstructor
