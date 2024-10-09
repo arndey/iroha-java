@@ -5,12 +5,14 @@ import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.ParameterSpec
+import com.squareup.kotlinpoet.ParameterizedTypeName
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeSpec
 import com.squareup.kotlinpoet.TypeVariableName
 import com.squareup.kotlinpoet.WildcardTypeName
+import com.squareup.kotlinpoet.asTypeName
 import jp.co.soramitsu.iroha2.codegen.blueprint.Blueprint
 import jp.co.soramitsu.iroha2.type.CompositeType
 
@@ -64,16 +66,17 @@ abstract class AbstractGenerator<T : Blueprint<*>> {
                 false -> className
             }
         }
-
-        val builder = TypeSpec.companionObjectBuilder()
+        val companionBuilder = TypeSpec.companionObjectBuilder()
             .addSuperinterface(SCALE_READER.parameterizedBy(thisType))
             .addSuperinterface(SCALE_WRITER.parameterizedBy(thisType))
             .addFunction(readFun(thisType, blueprint))
             .addFunction(writeFun(thisType, blueprint))
 
-        return when (blueprint.properties.isEmpty() && KModifier.SEALED !in clazz.modifiers) {
-            true -> builder.addFunction(variantEqualsFun(blueprint)).addFunction(variantHashcodeFun(blueprint))
-            false -> builder
+        return when {
+            blueprint.properties.isEmpty() && KModifier.SEALED !in clazz.modifiers -> {
+                companionBuilder.addFunction(variantEqualsFun(blueprint)).addFunction(variantHashcodeFun(blueprint))
+            }
+            else -> companionBuilder
         }
     }
 
@@ -193,5 +196,11 @@ abstract class AbstractGenerator<T : Blueprint<*>> {
             .addModifiers(KModifier.OVERRIDE)
             .returns(Int::class)
             .build()
+    }
+
+    protected fun TypeName.extractName() = when (this) {
+        is ParameterizedTypeName -> this.rawType.canonicalName
+        is ClassName -> this.canonicalName
+        else -> throw RuntimeException("Unexpected type: $this")
     }
 }
