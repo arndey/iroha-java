@@ -625,7 +625,7 @@ class InstructionsTest : IrohaTest<Iroha2Client>() {
         val assetKey = StoreAssetWithMetadata.ASSET_KEY
 
         val assetBefore = getAsset(assetId)
-        val value = assetBefore.value.cast<AssetValue.Store>().metadata.sortedMapOfName[assetKey]
+        val value = assetBefore.value.cast<AssetValue.Store>().metadata.sortedMapOfName[assetKey]?.fromJsonString()
         assertEquals(StoreAssetWithMetadata.ASSET_VALUE, value)
         client.tx { removeKeyValue(assetId, assetKey) }
 

@@ -235,7 +235,9 @@ object BlockHeaderExtractor : ResultExtractor<BlockHeader> {
  */
 object StringExtractor : ResultExtractor<String> {
     override fun extract(result: BatchedResponse<QueryOutputBox>): String {
-        return result.cast<BatchedResponse.V1>().batchedResponseV1.batch.cast<QueryOutputBox.Metadata>().string
+        return result.cast<BatchedResponse.V1>().batchedResponseV1.batch
+            .cast<QueryOutputBox.Metadata>().string
+            .fromJsonString()
     }
 }
 

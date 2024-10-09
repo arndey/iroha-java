@@ -162,6 +162,11 @@ fun RoleId.asString() = this.name.string
 
 fun RoleId.asJsonString() = "{\"role\": \"${this.name.string}\"}"
 
+fun String.fromJsonString() = when {
+    this.startsWith("\"") && this.endsWith("\"") -> this.drop(1).dropLast(1)
+    else -> this
+}
+
 fun SocketAddr.asString() = when (this) {
     is SocketAddr.Host -> this.socketAddrHost.let { "${it.host}:${it.port}" }
     is SocketAddr.Ipv4 -> this.socketAddrV4.let { "${it.ip}:${it.port}" }

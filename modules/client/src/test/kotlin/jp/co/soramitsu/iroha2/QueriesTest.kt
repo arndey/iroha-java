@@ -687,7 +687,7 @@ class QueriesTest : IrohaTest<Iroha2Client>() {
             .buildSigned(ALICE_KEYPAIR)
             .let { client.sendQuery(it) }
             .also { txs ->
-                assertTrue(txs.size == 7) // 5 + 2 genesis txs
+                assertTrue(txs.size == 9) // 5 + 4 genesis txs
             }
     }
 
