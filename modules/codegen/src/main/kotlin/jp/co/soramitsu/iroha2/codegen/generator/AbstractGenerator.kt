@@ -12,7 +12,6 @@ import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeSpec
 import com.squareup.kotlinpoet.TypeVariableName
 import com.squareup.kotlinpoet.WildcardTypeName
-import com.squareup.kotlinpoet.asTypeName
 import jp.co.soramitsu.iroha2.codegen.blueprint.Blueprint
 import jp.co.soramitsu.iroha2.type.CompositeType
 
